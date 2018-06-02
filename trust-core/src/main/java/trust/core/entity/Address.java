@@ -9,6 +9,8 @@ import trust.core.util.Hex;
 
 public class Address implements Parcelable {
 
+    public static final Address EMPTY = new Address("0000000000000000000000000000000000000000");
+
     private final String value;
 
     public Address(@NonNull String value) {
