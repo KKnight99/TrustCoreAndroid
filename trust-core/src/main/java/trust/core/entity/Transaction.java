@@ -6,13 +6,13 @@ import android.os.Parcelable;
 import java.math.BigInteger;
 
 public class Transaction implements Parcelable {
-    private final Address recipient;
-    private final Address contract;
-    private final BigInteger value;
-    private final BigInteger gasPrice;
-    private final long gasLimit;
-    private final long nonce;
-    private final String payload;
+    public final Address recipient;
+    public final Address contract;
+    public final BigInteger value;
+    public final BigInteger gasPrice;
+    public final long gasLimit;
+    public final long nonce;
+    public final String payload;
 
     public Transaction(
             Address recipient,
