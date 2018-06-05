@@ -13,6 +13,7 @@ public class Transaction implements Parcelable {
     public final long gasLimit;
     public final long nonce;
     public final String payload;
+    public final long leafPosition;
 
     public Transaction(
             Address recipient,
@@ -22,6 +23,18 @@ public class Transaction implements Parcelable {
             long gasLimit,
             long nonce,
             String payload) {
+        this(recipient, contract, value, gasPrice, gasLimit, nonce, payload, 0);
+    }
+
+    public Transaction(
+            Address recipient,
+            Address contract,
+            BigInteger value,
+            BigInteger gasPrice,
+            long gasLimit,
+            long nonce,
+            String payload,
+            long leafPosition) {
         this.recipient = recipient;
         this.contract = contract;
         this.value = value;
@@ -29,6 +42,7 @@ public class Transaction implements Parcelable {
         this.gasLimit = gasLimit;
         this.nonce = nonce;
         this.payload = payload;
+        this.leafPosition = leafPosition;
     }
 
     Transaction(Parcel in) {
@@ -39,6 +53,7 @@ public class Transaction implements Parcelable {
         gasLimit = in.readLong();
         nonce = in.readLong();
         payload = in.readString();
+        leafPosition = in.readLong();
     }
 
     public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
@@ -67,5 +82,6 @@ public class Transaction implements Parcelable {
         dest.writeLong(gasLimit);
         dest.writeLong(nonce);
         dest.writeString(payload);
+        dest.writeLong(leafPosition);
     }
 }
