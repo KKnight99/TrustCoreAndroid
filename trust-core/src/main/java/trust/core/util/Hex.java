@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import trust.core.entity.Message;
+
 public class Hex {
 
     public static int hexToInteger(String input, int def) {
@@ -75,7 +77,7 @@ public class Hex {
 
     @Nullable
     public static String cleanHexPrefix(@Nullable String input) {
-        if (containsHexPrefix(input)) {
+        if (input != null && containsHexPrefix(input)) {
             input = input.substring(2);
         }
         return input;
@@ -87,7 +89,7 @@ public class Hex {
         return result == null ? null : result.toString(10);
     }
 
-    @Nullable
+    @NonNull
     public static byte[] hexStringToByteArray(@Nullable String input) {
         String cleanInput = cleanHexPrefix(input);
         if (TextUtils.isEmpty(cleanInput)) {
@@ -131,5 +133,14 @@ public class Hex {
             return null;
         }
         return byteArrayToHexString(input, 0, input.length, true);
+    }
+
+    public static String decodeMessageData(Message<String> message) {
+        if (cleanHexPrefix(message.value).length() == 64) {
+            return message.value;
+        } else {
+            return containsHexPrefix(message.value)
+                    ? new String(hexStringToByteArray(message.value)) : message.value;
+        }
     }
 }

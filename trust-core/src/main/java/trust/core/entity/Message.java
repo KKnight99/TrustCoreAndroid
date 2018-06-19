@@ -3,30 +3,36 @@ package trust.core.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Message implements Parcelable {
+public class Message<V> implements Parcelable {
 
-    public final String value;
-    public final boolean isPersonal;
+    public final V value;
+    public final String url;
     public final long leafPosition;
 
-    public Message(String value) {
-        this(value, false);
-    }
-
-    public Message(String value, boolean isPersonal) {
-        this(value, isPersonal, 0);
-    }
-
-    public Message(String value, boolean isPersonal, long leafPosition) {
+    public Message(V value, String url, long leafPosition) {
         this.value = value;
-        this.isPersonal = isPersonal;
+        this.url = url;
         this.leafPosition = leafPosition;
     }
 
     protected Message(Parcel in) {
-        value = in.readString();
-        isPersonal = in.readByte() != 0;
+        Class<?> type = (Class<?>) in.readSerializable();
+        value = (V) in.readValue(type.getClassLoader());
+        url = in.readString();
         leafPosition = in.readLong();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(value.getClass());
+        dest.writeValue(value);
+        dest.writeString(url);
+        dest.writeLong(leafPosition);
     }
 
     public static final Creator<Message> CREATOR = new Creator<Message>() {
@@ -40,16 +46,4 @@ public class Message implements Parcelable {
             return new Message[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(value);
-        dest.writeByte((byte) (isPersonal ? 1 : 0));
-        dest.writeLong(leafPosition);
-    }
 }
